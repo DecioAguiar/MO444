@@ -4,9 +4,9 @@ from sklearn.utils.extmath import safe_sparse_dot
 from sklearn.metrics import mean_squared_error
 
 def inicializacaoTreino(treino):
-    coluna_theta = pd.DataFrame(np.ones(treino.shape[0]), columns=['theta'])
-    treino = pd.concat([coluna_theta, treino], axis=1)
-    return treino.values
+    copiaTreino = treino.copy()
+    copiaTreino.insert(0, 'x0', np.ones(treino.shape[0]))
+    return copiaTreino
 
 class NormalRegression:
     def __init__(self):
@@ -24,4 +24,5 @@ class NormalRegression:
 
 
     def predict(self, Data):
-        return coef * Data
+        teste = inicializacaoTreino(Data)
+        return safe_sparse_dot(teste, self.coef)

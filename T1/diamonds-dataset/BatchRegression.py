@@ -4,12 +4,12 @@ from sklearn.utils.extmath import safe_sparse_dot
 from sklearn.metrics import mean_squared_error
 
 def inicializacaoTreino(treino):
-    coluna_theta = pd.DataFrame(np.ones(treino.shape[0]), columns=['theta'])
-    treino = pd.concat([coluna_theta, treino], axis=1)
-    return treino.values
+    copiaTreino = treino.copy()
+    copiaTreino.insert(0, 'x0', np.ones(treino.shape[0]))
+    return copiaTreino.values
 
 def inicializacaoLabels(labels):
-	return labels.reshape(labels.shape[0], 1)
+    return labels.values.reshape(labels.shape[0], 1)
 
 class BatchRegression:
     def __init__(self, max_iter=1000, eta0=0.01):
@@ -30,7 +30,8 @@ class BatchRegression:
             hxs = safe_sparse_dot(treino, thetas)
             self.erroHistorico.append(mean_squared_error(hxs, labels))
 
-        self.coef = thetas
-
+        self.coef = thetas[0:,0]
+    
     def predict(self, Data):
-        return coef * Data
+        teste = inicializacaoTreino(Data)
+        return safe_sparse_dot(teste, self.coef)
