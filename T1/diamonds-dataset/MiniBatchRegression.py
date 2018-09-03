@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from sklearn.utils.extmath import safe_sparse_dot
+from sklearn.metrics import mean_squared_error
 
 def inicializacaoTreino(treino):
     coluna_theta = pd.DataFrame(np.ones(treino.shape[0]), columns=['theta'])
@@ -21,6 +23,7 @@ class MiniBatchRegression:
         linhas, colunas = treino.shape
         thetas = np.random.randn(colunas,1)
         labels = inicializacaoLabels(labels)
+        erroHistorico = []
     
         for interacao in range(self.interacoes):
             elem_index = np.random.randint(linhas)
@@ -30,6 +33,10 @@ class MiniBatchRegression:
             gradientes = xi.T.dot(xi.dot(thetas) - yi) / self.batchSize
             thetas = thetas - (self.eta0 * gradientes)
             self.coef = thetas
+            hxs = safe_sparse_dot(treino, self.coef)
+            erroHistorico.append(mean_squared_error(hxs, labels))
+
+        return erroHistorico
 
     def predict(self, Data):
         return coef * Data
