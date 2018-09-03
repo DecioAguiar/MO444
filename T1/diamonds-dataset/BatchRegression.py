@@ -6,6 +6,9 @@ def inicializacaoTreino(treino):
     treino = pd.concat([coluna_theta, treino], axis=1)
     return treino.values
 
+def inicializacaoLabels(labels):
+	return labels.reshape(labels.shape[0], 1)
+
 class BatchRegression:
     def __init__(self, max_iter=1000, eta0=0.01):
         self.interacoes = max_iter
@@ -14,21 +17,14 @@ class BatchRegression:
 
     def fit(self, Data, labels):
         treino = inicializacaoTreino(Data)
+        labels = inicializacaoLabels(labels)
         linhas, colunas = treino.shape
-        thetas = np.zeros((colunas))
-        
+        thetas = np.random.randn(colunas,1)
+
         for interacao in range(self.interacoes):
-            for l in range(linhas):
-                gradientes = None
-                for l in range(linhas):
-                    xi = treino[l, 0:]
-                    yi = labels[l]
-                    if gradientes is None:
-                        gradientes = xi * (xi.dot(thetas) - yi)
-                    else:
-                        gradientes += xi * (xi.dot(thetas) - yi)
-                thetas = thetas - ( (self.eta0/linhas) * gradientes)
-                self.coef = thetas
+            gradientes =  treino.T.dot( treino.dot(thetas) - labels) / linhas
+            thetas = thetas - self.eta0 * gradientes
+            self.coef = thetas
 
     def predict(self, Data):
         return coef * Data
