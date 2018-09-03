@@ -1,3 +1,11 @@
+import numpy as np
+import pandas as pd
+
+def inicializacaoTreino(treino):
+    coluna_theta = pd.DataFrame(np.ones(treino.shape[0]), columns=['theta'])
+    treino = pd.concat([coluna_theta, treino], axis=1)
+    return treino.values
+
 class SGDRegression:
     def __init__(self, max_iter=1000, eta0=0.01):
         self.interacoes = max_iter
@@ -20,8 +28,3 @@ class SGDRegression:
 
     def predict(self, Data):
         return coef * Data
-
-def inicializacaoTreino(treino):
-    coluna_theta = pd.DataFrame(np.ones(treino.shape[0]), columns=['theta'])
-    treino = pd.concat([coluna_theta, treino], axis=1)
-    return treino.values
