@@ -13,12 +13,12 @@ class SGDRegression:
         self.interacoes = max_iter
         self.eta0 = eta0
         self.coef = []
+        self.erroHistorico = []
 
     def fit(self, Data, labels):
         treino = inicializacaoTreino(Data)
         linhas, colunas = treino.shape
         thetas = np.random.randn(colunas,1)
-        erroHistorico = []
     
         for interacao in range(self.interacoes):
             for i in range(linhas):
@@ -27,11 +27,10 @@ class SGDRegression:
                 yi = labels[elem_index:elem_index+1]
                 gradientes = xi.T.dot(xi.dot(thetas) - yi)
                 thetas = thetas - (self.eta0 * gradientes)
-                self.coef = thetas
-            hxs = safe_sparse_dot(treino, self.coef)
-            erroHistorico.append(mean_squared_error(hxs, labels))
+            hxs = safe_sparse_dot(treino, thetas)
+            self.erroHistorico.append(mean_squared_error(hxs, labels))
 
-        return erroHistorico
+        self.coef = thetas
 
 
     def predict(self, Data):

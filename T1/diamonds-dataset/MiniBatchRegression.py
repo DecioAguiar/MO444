@@ -17,13 +17,13 @@ class MiniBatchRegression:
         self.eta0 = eta0
         self.coef = []
         self.batchSize = batchSize
+        self.erroHistorico = []
 
     def fit(self, Data, labels):
         treino = inicializacaoTreino(Data)
         linhas, colunas = treino.shape
         thetas = np.random.randn(colunas,1)
         labels = inicializacaoLabels(labels)
-        erroHistorico = []
     
         for interacao in range(self.interacoes):
             elem_index = np.random.randint(linhas)
@@ -32,11 +32,10 @@ class MiniBatchRegression:
             yi = labels[elem_index:elemFinal]
             gradientes = xi.T.dot(xi.dot(thetas) - yi) / self.batchSize
             thetas = thetas - (self.eta0 * gradientes)
-            self.coef = thetas
-            hxs = safe_sparse_dot(treino, self.coef)
-            erroHistorico.append(mean_squared_error(hxs, labels))
+            hxs = safe_sparse_dot(treino, thetas)
+            self.erroHistorico.append(mean_squared_error(hxs, labels))
 
-        return erroHistorico
+        self.coef = thetas
 
     def predict(self, Data):
         return coef * Data

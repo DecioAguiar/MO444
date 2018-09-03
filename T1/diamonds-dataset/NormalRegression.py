@@ -8,29 +8,20 @@ def inicializacaoTreino(treino):
     treino = pd.concat([coluna_theta, treino], axis=1)
     return treino.values
 
-def inicializacaoLabels(labels):
-	return labels.reshape(labels.shape[0], 1)
-
-class BatchRegression:
-    def __init__(self, max_iter=1000, eta0=0.01):
-        self.interacoes = max_iter
-        self.eta0 = eta0
+class NormalRegression:
+    def __init__(self):
         self.coef = []
         self.erroHistorico = []
 
     def fit(self, Data, labels):
         treino = inicializacaoTreino(Data)
-        labels = inicializacaoLabels(labels)
         linhas, colunas = treino.shape
         thetas = np.random.randn(colunas,1)
-
-        for interacao in range(self.interacoes):
-            gradientes =  treino.T.dot( treino.dot(thetas) - labels) / linhas
-            thetas = thetas - self.eta0 * gradientes
-            hxs = safe_sparse_dot(treino, thetas)
-            self.erroHistorico.append(mean_squared_error(hxs, labels))
-
+        thetas = np.linalg.inv(treino.T.dot(treino)).dot(treino.T).dot(labels)
+        hxs = safe_sparse_dot(treino, thetas)
+        self.erroHistorico.append(mean_squared_error(hxs, labels))
         self.coef = thetas
+
 
     def predict(self, Data):
         return coef * Data
