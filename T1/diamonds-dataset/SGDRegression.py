@@ -25,11 +25,12 @@ class SGDRegression:
         thetas = np.random.randn(colunas,1)
     
         for interacao in range(self.interacoes):
-            elem_index = np.random.randint(linhas)
-            xi = treino[elem_index:elem_index+1]
-            yi = labels[elem_index:elem_index+1]
-            gradientes = xi.T.dot(xi.dot(thetas) - yi)
-            thetas = thetas - (self.eta0 * gradientes)
+            for i in range(linhas):
+                elem_index = np.random.randint(linhas)
+                xi = treino[elem_index:elem_index+1]
+                yi = labels[elem_index:elem_index+1]
+                gradientes = xi.T.dot(xi.dot(thetas) - yi)
+                thetas = thetas - (self.eta0 * gradientes)
             hxs = safe_sparse_dot(treino, thetas)
             self.erroHistorico.append(mean_squared_error(hxs, labels))
 

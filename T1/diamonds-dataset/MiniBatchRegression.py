@@ -12,7 +12,7 @@ def inicializacaoLabels(labels):
 	return labels.values.reshape(labels.shape[0], 1)
 
 class MiniBatchRegression:
-    def __init__(self, max_iter=1000, eta0=0.01, batchSize=10):
+    def __init__(self, max_iter=1000, eta0=0.01, batchSize=200):
         self.interacoes = max_iter
         self.eta0 = eta0
         self.coef = []
